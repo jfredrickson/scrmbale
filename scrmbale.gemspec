@@ -6,9 +6,9 @@ Gem::Specification.new do |s|
   s.version = '0.0.1'
   s.authors = ['Jeff Fredrickson']
   s.email = %w(jeff.fredrickson@gmail.com)
-  s.files = %w(lib/scrmbale.rb) + Dir['lib/scrmbale/*.rb']
+  s.files = `git ls-files -z`.split("\x0")
   s.license = 'MIT'
-  s.required_ruby_version = '~> 1.9'
+  s.required_ruby_version = '> 1.9'
   s.require_paths = ['lib']
   s.executables = ['scrmbale']
 
