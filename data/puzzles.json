@@ -1,0 +1,14 @@
+[
+  {
+    "letters": "EORTTT",
+    "words": ["TOTTER","OTTER","TORTE","ROTE","TORE","TORT","TOTE","TROT","ORE","ORT","RET","ROE","ROT","TOE","TOT"]
+  },
+  {
+    "letters": "EEFIRZ",
+    "words": ["FRIEZE","FIRE","FREE","REEF","RIFE","ERE","FEE","FEZ","FIE","FIR","IRE","REF"]
+  },
+  {
+    "letters": "ABIILS",
+    "words": ["ALIBIS","ALIBI","BAILS","BASIL","AILS","BAIL","BIAS","LABS","SAIL","SLAB","AIL","LAB"]
+  }
+]
