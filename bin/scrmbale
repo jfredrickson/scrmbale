@@ -4,13 +4,14 @@ require 'scrmbale'
 
 class GameApp
   TIME_LIMIT = 120
+  SOURCE_FILE = "../../data/puzzles.json"
 
   def initialize
     @game = Scrmbale::Game.new(load_puzzles)
   end
 
   def load_puzzles
-    f = File.open(File.expand_path("../../data/puzzles.json", __FILE__), "r")
+    f = File.open(File.expand_path(SOURCE_FILE, __FILE__), "r")
     puzzles = f.read
     f.close
     return puzzles
@@ -38,7 +39,13 @@ class GameApp
 
   def prompt(text)
     ('%s> ' % text).display
-    gets.chomp
+    input = gets
+    quit if input.nil? # ^D
+    input.chomp
+  end
+
+  def time_remaining
+    TIME_LIMIT - (Time.now.to_i - @start_time)
   end
 
   def run
@@ -46,44 +53,40 @@ class GameApp
       quit
     end
 
-    loop do # Game
+    loop do # Game loop
       catch :round do
-        start = Time.now.to_i
-        loop do # Puzzle
+        @start_time = Time.now.to_i
+        loop do # Puzzle loop
           print_board
-          time_remaining = TIME_LIMIT - (Time.now.to_i - start)
+          input = prompt('[Score: %s] %s (%ss)' % [@game.score, @game.letters, time_remaining])
           if (time_remaining <= 0)
             puts "Time's up!"
             game_over unless @game.big_word_complete?
             prompt('Press enter to start next round')
             throw :round
           end
-          input = prompt('[Score: %s] %s (%ss)> ' % [@game.score, @game.letters, time_remaining])
           if input.empty?
             @game.shuffle
           else
-            if (time_remaining <= 0)
-              puts "Time's up!"
-              game_over unless @game.big_word_complete?
-              prompt('Press enter to start next round')
-              throw :round
-            else
-              if @game.guess(input)
-                puts "Great!"
-                puts "You got the big word!" if input.length == 6
-                if @game.complete?
-                  puts "You got all the words!"
-                  prompt('Press enter to start next round')
-                  throw :round
-                end
-              else
-                puts "No good."
+            if @game.guess(input)
+              puts "Great!"
+              puts "You got the big word!" if input.length == 6
+              if @game.complete?
+                puts "You got all the words!"
+                prompt('Press enter to start next round')
+                throw :round
               end
+            else
+              puts "No good."
             end
           end
         end
       end
-      @game.next_round
+      round = @game.next_round
+      if round.nil?
+        puts "Wow, we ran out of puzzles."
+        quit
+      end
     end
   end
 end
