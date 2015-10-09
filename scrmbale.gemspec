@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.email = %w(jeff.fredrickson@gmail.com)
   s.files = `git ls-files -z`.split("\x0")
   s.license = 'MIT'
-  s.required_ruby_version = '> 1.9'
+  s.required_ruby_version = '>= 1.9.3'
   s.require_paths = ['lib']
   s.executables = ['scrmbale']
 
