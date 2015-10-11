@@ -17,24 +17,35 @@ class GameApp
     return puzzles
   end
 
-  def quit
+  def quit(message = "")
+    reveal_board
+    puts message unless message.empty?
     puts "\nYour final score: #{@game.score}"
     exit
   end
 
-  def print_board
-    @game.words.each do |w|
-      if w.discovered?
-        puts "  " + w.text.upcase.split("").join(" ")
-      else
-        puts "  " + ("_" * w.text.length).split("").join(" ")
-      end
+  def display(word, mask = true)
+    if word.discovered? || !mask
+      "  " + word.text.upcase.split("").join(" ")
+    else
+      "  " + ("_" * word.text.length).split("").join(" ")
     end
   end
 
-  def game_over
-    puts "You didn't get the big word! Game over."
-    quit
+  def print_board(mask = true)
+    puts
+    rows = @game.words.count / 2 + @game.words.count % 2
+    col1, col2 = @game.words.each_slice(rows).to_a
+    rows.times do |i|
+      first = display(col1[i], mask)
+      second = col2[i].nil? ? "" : display(col2[i], mask)
+      puts first + (" " * (15 - first.length)) + second
+    end
+    puts
+  end
+
+  def reveal_board
+    print_board(false)
   end
 
   def prompt(text)
@@ -52,7 +63,6 @@ class GameApp
     trap "SIGINT" do
       quit
     end
-
     loop do # Game loop
       catch :round do
         @start_time = Time.now.to_i
@@ -60,8 +70,9 @@ class GameApp
           print_board
           input = prompt('[Score: %s] %s (%ss)' % [@game.score, @game.letters, time_remaining])
           if (time_remaining <= 0)
+            quit "You didn't get the big word! Game over." unless @game.big_word_complete?
+            reveal_board
             puts "Time's up!"
-            game_over unless @game.big_word_complete?
             prompt('Press enter to start next round')
             throw :round
           end
@@ -69,13 +80,14 @@ class GameApp
             @game.shuffle
           else
             if @game.guess(input)
-              puts "Great!"
-              puts "You got the big word!" if input.length == 6
               if @game.complete?
+                reveal_board
                 puts "You got all the words!"
                 prompt('Press enter to start next round')
                 throw :round
               end
+              puts "Great!"
+              puts "You got the big word!" if input.length == 6
             else
               puts "No good."
             end
