@@ -3,7 +3,7 @@ Gem::Specification.new do |s|
   s.summary = 'A simple word puzzle game.'
   s.description = 'This library provides the game logic required to build a simple word puzzle game.'
   s.homepage = 'https://github.com/jfredrickson/scrmbale'
-  s.version = '0.0.1'
+  s.version = '0.0.2'
   s.authors = ['Jeff Fredrickson']
   s.email = %w(jeff.fredrickson@gmail.com)
   s.files = `git ls-files -z`.split("\x0")
